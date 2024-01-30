@@ -26,7 +26,6 @@ RUN apt update \
 RUN update-ca-certificates
 
 COPY --from=builder /app/target/release/cached-btc-rpc /app/cached-btc-rpc
-COPY ./docker-entrypoint.sh /app/docker-entrypoint.sh
 
 EXPOSE 8124
 CMD ["/app/cached-btc-rpc"]
