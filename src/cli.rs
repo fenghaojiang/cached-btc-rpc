@@ -16,6 +16,9 @@ pub struct Cli {
 
     #[arg(short, long, default_value = "redis://127.0.0.1:6379", help = "Redis URL")]
     pub redis_url: String,
+
+    #[arg(long, default_value = "1200", help = "expired time for redis, in second")]
+    pub expired_second: u64, 
 }
 
 fn endpoint_parser(s: &str) -> Result<(String, Url), String> {

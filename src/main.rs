@@ -17,6 +17,7 @@ struct AppState {
     chains: HashMap<String, ChainState>,
     http_client: Client,
     redis: r2d2::Pool<redis::Client>,
+    redis_expired_seconds: u64, 
 }
 
 struct ChainState {
@@ -226,7 +227,7 @@ async fn rpc_call(
 
             if can_cache {
                 let value = extracted_value.as_str();
-                let _ = redis_conn.set::<_, _, String>(cache_key.clone(), value);
+                let _ = redis_conn.set_ex::<_, _, String>(cache_key.clone(), value, data.redis_expired_seconds);
             }
         }
     }
@@ -272,6 +273,7 @@ async fn main() -> std::io::Result<()> {
         chains: Default::default(),
         http_client: reqwest::Client::new(),
         redis: redis_conn_pool,
+        redis_expired_seconds: arg.expired_second,
     };
 
     let handler_factories = rpc_cache_handler::all_factories();
